@@ -6,9 +6,9 @@ for data in range(0, len(population)):
 population.sort()
 print(population)
 if size % 2 != 0:
-  print(population[int(size/2)])
+  print("The median is: ",population[int(size/2)])
 else: 
   median = int(size/2)
   x = int(population[median])
   y = int(population[median-1])
-  print("The mean is: ",(x+y)/2)
+  print("The median is: ",(x+y)/2)

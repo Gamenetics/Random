@@ -12,9 +12,9 @@ for num in population:
     else:
        numbers[key] = 1
 #print(population)
-#print(numbers)
+print(numbers)
 mode = []
 for num in numbers: 
   if numbers[num] == numbers[max(numbers, key=numbers.get)]:
-     mode += str(num)
+     mode.append(str(num)) 
 print("Mode:", mode)
