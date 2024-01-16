@@ -1,0 +1,186 @@
+import pygame
+import pygame.freetype
+import random
+import math
+pygame.init()
+pygame.font.init() # you have to call this at the start, 
+                   # if you want to use this module.
+font = pygame.font.Font(pygame.font.get_default_font(), 10)
+background = pygame.image.load('./grid.jpg')
+background_size = background.get_size()
+background_rect = background.get_rect()
+
+w,h = 1000,600
+x = 0
+y = 0
+
+x1 = 0
+y1 = -h
+
+pygame.display.set_caption = "Minecart 7"
+
+width = 1000
+height = 600
+wn = pygame.display.set_mode((width, height))
+run = True
+
+player_x = width/2
+player_y = height/2
+player_x_vel = player_y_vel = 0
+size = 15
+
+lol = 255
+#food limit
+foodlimit = 50
+#food x:y key dictionary
+food = {}
+totalfood= 0
+enemy = {}
+totalenemy=0
+#new food function
+def createnewfood():
+   new_x = random.uniform(5,995)
+   new_y = random.uniform(5,595)
+   while player_x-15 < new_x < player_x+size+15 and player_y-15 < new_y < player_y +size+15:
+      new_x = random.uniform(5,995)
+      new_y = random.uniform(5,595)
+   food[new_x] = new_y
+
+def createnewenemy():
+   new_x = random.uniform(5,995)
+   new_y = random.uniform(5,595)
+   while player_x-15 < new_x < player_x+size+15 and player_y-15 < new_y < player_y +size+15:
+      new_x = random.uniform(5,995)
+      new_y = random.uniform(5,595)
+   enemy[new_x] = new_y
+
+while run:
+    wn.fill((0, 0 ,0))
+
+    for i in pygame.event.get():
+      if i.type == pygame.QUIT:
+         run = False
+      elif i.type == pygame.KEYDOWN:
+         if i.key == pygame.K_w:
+            player_y_vel = -0.5
+         if i.key == pygame.K_s:
+            player_y_vel = 0.5
+         if i.key == pygame.K_a:
+            player_x_vel = -0.5
+         if i.key == pygame.K_d:
+            player_x_vel = 0.5
+      if i.type == pygame.KEYUP:
+         if i.key == pygame.K_w or i.key == pygame.K_s:
+            player_y_vel = 0
+         if i.key == pygame.K_a or i.key == pygame.K_d:
+            player_x_vel = 0
+    player_x += player_x_vel
+    player_y += player_y_vel
+    if player_x > width:
+       player_x = 0
+    elif player_x < 0:
+       player_x = width
+
+    if player_y > height:
+       player_y = 0
+    elif player_y < 0:
+       player_y = height
+    
+    #eatfood
+    for x in list(food):
+       #print(player_x,x,player_y,food[x])
+       pygame.draw.circle(wn, (25,25,255), (x, food[x]),6)
+       if player_x-size-2.5 < x < player_x +size+2.5 and player_y-size-2.5 < food[x] < player_y +size+2.5:
+          size+=1
+          totalfood-=1
+          print("literally ate", size,totalfood)
+          del food[x]
+          continue
+   
+    for x in list(enemy):
+       if player_x-size-7.5 < x < player_x +size+7.5 and player_y-size-7.5 < enemy[x] < player_y +size+7.5:
+          size-=10
+          totalenemy-=1
+          print("literally dead")
+          del enemy[x]
+          continue
+       
+    
+    if size > 600 or size < 1:
+      run = False
+    #stuff
+    if totalfood < 150:
+       totalfood+=1
+       createnewfood()
+    if totalenemy < 3:
+       totalenemy+=1
+       createnewenemy()
+   
+
+    #wn.blit(background,background_rect)
+    #y1 += 5
+    #y += 5
+   # wn.blit(background,(x,y))
+    #wn.blit(background,(x1,y1))
+    #if y > h:
+     #   y = -h
+   # if y1 > h:
+       # y1 = -h
+    #pygame.display.flip()
+
+    pygame.draw.circle(wn, (0,lol,0), (player_x,player_y), size)
+    for x in food:
+       pygame.draw.circle(wn, (random.uniform(0,200),random.uniform(0,200),random.uniform(0,200)), (x,food[x]), 5)
+    for x in enemy:
+       pygame.draw.circle(wn, (255,0,0), (x,enemy[x]), 15)
+
+
+
+    #eyeballs
+    if player_x_vel == 0 and player_y_vel == 0 or player_x_vel == 0 and player_y_vel < 0:
+       pygame.draw.circle(wn, (255,255,255), (player_x-size/2,player_y-size/2.5), size/5)
+       pygame.draw.circle(wn, (255,255,255), (player_x+size/2,player_y-size/2.5), size/5)
+       pygame.draw.circle(wn, (0,0,0), (player_x-size/2,player_y-size/2.5), size/10)
+       pygame.draw.circle(wn, (0,0,0), (player_x+size/2,player_y-size/2.5), size/10)
+    if player_x_vel == 0 and player_y_vel > 0:
+       pygame.draw.circle(wn, (255,255,255), (player_x-size/2,player_y+size/2.5), size/5)
+       pygame.draw.circle(wn, (255,255,255), (player_x+size/2,player_y+size/2.5), size/5)
+       pygame.draw.circle(wn, (0,0,0), (player_x-size/2,player_y+size/2.5), size/10)
+       pygame.draw.circle(wn, (0,0,0), (player_x+size/2,player_y+size/2.5), size/10)
+    if player_x_vel > 0 and player_y_vel == 0:
+       pygame.draw.circle(wn, (255,255,255), (player_x+size/2,player_y-size/2.5), size/5)
+       pygame.draw.circle(wn, (255,255,255), (player_x+size/2,player_y+size/2.5), size/5)
+       pygame.draw.circle(wn, (0,0,0), (player_x+size/2,player_y-size/2.5), size/10)
+       pygame.draw.circle(wn, (0,0,0), (player_x+size/2,player_y+size/2.5), size/10)
+    if player_x_vel < 0 and player_y_vel == 0:
+       pygame.draw.circle(wn, (255,255,255), (player_x-size/2,player_y-size/2.5), size/5)
+       pygame.draw.circle(wn, (255,255,255), (player_x-size/2,player_y+size/2.5), size/5)
+       pygame.draw.circle(wn, (0,0,0), (player_x-size/2,player_y-size/2.5), size/10)
+       pygame.draw.circle(wn, (0,0,0), (player_x-size/2,player_y+size/2.5), size/10)
+    #diagonals
+    if player_x_vel < 0 and player_y_vel < 0:
+       pygame.draw.circle(wn, (255,255,255), (player_x-size/4,player_y-size/1.5), size/5)
+       pygame.draw.circle(wn, (255,255,255), (player_x-size/1.5,player_y-size/4), size/5)
+       pygame.draw.circle(wn, (0,0,0), (player_x-size/4,player_y-size/1.5), size/10)
+       pygame.draw.circle(wn, (0,0,0), (player_x-size/1.5,player_y-size/4), size/10)
+    if player_x_vel > 0 and player_y_vel > 0:
+       pygame.draw.circle(wn, (255,255,255), (player_x+size/4,player_y+size/1.5), size/5)
+       pygame.draw.circle(wn, (255,255,255), (player_x+size/1.5,player_y+size/4), size/5)
+       pygame.draw.circle(wn, (0,0,0), (player_x+size/4,player_y+size/1.5), size/10)
+       pygame.draw.circle(wn, (0,0,0), (player_x+size/1.5,player_y+size/4), size/10)
+    if player_x_vel > 0 and player_y_vel < 0:
+       pygame.draw.circle(wn, (255,255,255), (player_x+size/4,player_y-size/1.5), size/5)
+       pygame.draw.circle(wn, (255,255,255), (player_x+size/1.5,player_y-size/4), size/5)
+       pygame.draw.circle(wn, (0,0,0), (player_x+size/4,player_y-size/1.5), size/10)
+       pygame.draw.circle(wn, (0,0,0), (player_x+size/1.5,player_y-size/4), size/10)
+    if player_x_vel < 0 and player_y_vel > 0:
+       pygame.draw.circle(wn, (255,255,255), (player_x-size/4,player_y+size/1.5), size/5)
+       pygame.draw.circle(wn, (255,255,255), (player_x-size/1.5,player_y+size/4), size/5)
+       pygame.draw.circle(wn, (0,0,0), (player_x-size/4,player_y+size/1.5), size/10)
+       pygame.draw.circle(wn, (0,0,0), (player_x-size/1.5,player_y+size/4), size/10)
+    
+
+    text_surface = font.render(f'{size}', True, pygame.Color('orange'))
+    wn.blit(text_surface, dest=(player_x,player_y+size+5))
+    
+    pygame.display.update()
