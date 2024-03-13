@@ -1,6 +1,9 @@
-f = open("teagwag.txt", "r")
+f = open("textlist.txt", "r")
 result = ""
 for line in f:
    for x in line.split():
-      result += f"\"{x.strip()}\","
-print(result + "\n\n\n\n\n")
+      if x not in result:
+         result += f"\"{x.strip()}\","
+      else:
+         print("Duplicate removed")
+print(result)
