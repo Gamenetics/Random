@@ -1,0 +1,56 @@
+import pygame
+from pygame.locals import *
+pygame.init()
+screen = pygame.display.set_mode((800, 600))
+
+class Player(pygame.sprite.Sprite): 
+    def __init__(self, x, y):
+        super().__init__() 
+        self.pos = pygame.math.Vector2(x, y)
+        self.move = pygame.math.Vector2()
+        try:
+            self.image = pygame.image.load('image.png')
+        except:
+            self.image = pygame.Surface((20, 20))
+            self.image.fill((255, 0, 0))
+        self.rect = self.image.get_rect(midbottom = (round(self.pos.x), round(self.pos.y)))
+
+    def update(self):
+        pressed = pygame.key.get_pressed()
+        if pressed[K_LEFT]:
+            self.move.x -= 50
+        if pressed[K_RIGHT]:
+            self.move.x += 50
+        if pressed[K_UP]:
+            self.move.y = -1000
+        print(time_passed,self.move, self.move*time_passed)
+        self.pos = self.pos + self.move * time_passed
+        self.move.x *= 0.8 # slow down (decrease progressively)
+        self.move.y += 5000 * time_passed
+
+        if self.pos.y > 600:
+            self.pos.y = 600
+
+        self.rect = self.image.get_rect(midbottom = (round(self.pos.x), round(self.pos.y)))
+        if self.rect.left < 0:
+            self.rect.left = 0
+            self.pos.x = self.rect.centerx
+        if self.rect.right > 800:
+            self.rect.right = 800
+            self.pos.x = self.rect.centerx
+
+player = Player(400, 600)
+allSprites = pygame.sprite.Group(player)
+
+clock = pygame.time.Clock()
+while True:
+    time_passed = clock.tick(60) / 1000
+    for event in pygame.event.get():
+        if event.type == QUIT: 
+            pygame.quit()
+            exit()
+    allSprites.update()
+
+    screen.fill((220, 220, 255))
+    allSprites.draw(screen)
+    pygame.display.flip()
