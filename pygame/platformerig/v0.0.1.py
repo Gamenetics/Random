@@ -240,7 +240,7 @@ while run:
     rect = pygame.Rect(player_x,player_y, size, size)
 
     for x in enemy:
-          draw_health_bar(wn , (x.posx-10,x.posy-10), (40,5), (0,0,0), (255,0,0), (0,255,0), x.health/3)
+          draw_health_bar(wn , (x.posx,x.posy), (5,5), (0,0,0), (255,0,0), (0,255,0), x.health/3)
           x.velx = random.uniform(3,-3)/2
           x.vely += 0.25
           x.attacktimer += 1

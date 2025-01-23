@@ -1,11 +1,10 @@
 # A simple calculator to do basic operators
 while True:
-    l1=int(input("first: "))
-    l2=int(input("second: "))
-    type=input("type: ")
+    l1=int(input("first number: "))
+    l2=int(input("second number: "))
+    type=input("Operator (+ - / *): ")
     if type == "+":
         result = l1 + l2
-        print(l1,l2, l1+l2)
     elif type == "-":
         result = l1 - l2
     elif type == "/":
